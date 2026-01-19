@@ -1,0 +1,70 @@
+1.
+SELECT CONCAT(imie, ' ', nazwisko) AS 'Uczeń'
+FROM uczniowie;
+
+2.
+SELECT u.imie, u.nazwisko, p.nazwa AS projekt
+FROM uczniowie u
+JOIN projekty p ON u.id_ucznia = p.id_ucznia;
+
+3.
+SELECT nazwa AS projekt
+FROM projekty;
+
+4.
+SELECT COUNT(*) AS liczba_projektow FROM projekty;
+SELECT COUNT(*) AS liczba_uczniow FROM uczniowie;
+
+5.
+SELECT u.imie, u.nazwisko, p.nazwa AS projekt
+FROM uczniowie u
+LEFT JOIN projekty p ON u.id_ucznia = p.id_ucznia;
+
+6.
+SELECT nazwa AS projekt
+FROM projekty
+WHERE id_ucznia IS NULL;
+
+7.
+SELECT DISTINCT k.wychowawca
+FROM klasy k
+JOIN uczniowie u ON k.id_klasy = u.id_klasy
+LEFT JOIN projekty p ON u.id_ucznia = p.id_ucznia
+WHERE p.id_ucznia IS NULL;
+
+8.
+SELECT u.imie, u.nazwisko, p.nazwa AS projekt
+FROM uczniowie u
+LEFT JOIN projekty p ON u.id_ucznia = p.id_ucznia
+UNION
+SELECT u.imie, u.nazwisko, p.nazwa AS projekt
+FROM uczniowie u
+RIGHT JOIN projekty p ON u.id_ucznia = p.id_ucznia;
+
+9.
+SELECT 
+  (SELECT COUNT(*) FROM projekty) AS liczba_projektow,
+  (SELECT COUNT(*) FROM uczniowie) AS liczba_uczniow;
+
+10.
+SELECT k.nazwa AS klasa, k.wychowawca, COUNT(u.id_ucznia) AS liczba_uczniow
+FROM klasy k
+LEFT JOIN uczniowie u ON k.id_klasy = u.id_klasy
+GROUP BY k.id_klasy, k.nazwa, k.wychowawca;
+
+11.
+SELECT k.nazwa AS klasa, k.wychowawca, COUNT(p.id_projektu) AS uczniowie_z_projektem
+FROM klasy k
+JOIN uczniowie u ON k.id_klasy = u.id_klasy
+JOIN projekty p ON u.id_ucznia = p.id_ucznia
+GROUP BY k.id_klasy, k.nazwa, k.wychowawca;
+
+12.
+SELECT k.wychowawca, COUNT(u.id_ucznia) AS uczniowie_bez_projektu
+FROM klasy k
+JOIN uczniowie u ON k.id_klasy = u.id_klasy
+LEFT JOIN projekty p ON u.id_ucznia = p.id_ucznia
+WHERE p.id_ucznia IS NULL
+GROUP BY k.wychowawca
+ORDER BY uczniowie_bez_projektu ASC
+LIMIT 1;
